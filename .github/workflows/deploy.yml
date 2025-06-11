@@ -8,24 +8,19 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+        - name: Git checkout
+          uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18 # Or your preferred version
+        - name: Use Node 12.x
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12.x
 
-      - name: Install dependencies
-        run: npm install # or yarn install
+        - name: Install Dependencies (prod)
+          run: yarn install --frozen-lockfile --production
 
-      - name: Build project
-        run: npm run build # or yarn run build
-        env:
-            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # Expose your secret as env variable
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Or your build output folder
+        - name: Run Tests (JEST)
+          run: yarn test --ci --silent --testPathIgnorePatterns=experimental
+          env:
+            CI: true
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
