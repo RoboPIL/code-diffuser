@@ -16,9 +16,13 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
   },
   plugins: [
-    new webpack.DefinePlugin(envKeys)
+    new webpack.DefinePlugin({
+      'process.env.OPENAI_API_KEY': JSON.stringify(process.env.OPENAI_API_KEY)
+    })
   ],
-  mode: 'production'
+  mode: 'production',
+  target: 'web'
 }; 

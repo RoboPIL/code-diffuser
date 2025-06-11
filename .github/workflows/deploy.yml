@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ gh-pages ]
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -29,13 +29,19 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
+      - name: Prepare Deployment
+        run: |
+          # Create a new directory for deployment
+          mkdir -p deploy
+          # Copy only the necessary files
+          cp -r index.html dist deploy/
+          # Create .nojekyll to bypass Jekyll processing
+          touch deploy/.nojekyll
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: .
+          folder: deploy
           branch: gh-pages
           clean: true
-          clean-exclude: |
-            .git
-            .github
           token: ${{ secrets.GITHUB_TOKEN }}
