@@ -1,5 +1,5 @@
 // Configuration
-const OPENAI_API_KEY = 'OPENAI_API_KEY_PLACEHOLDER';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 // Precomputed point clouds
 const POINT_CLOUDS = {
