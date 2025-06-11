@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Use Node 12.x
         uses: actions/setup-node@v1
@@ -38,6 +39,20 @@ jobs:
           # Create .nojekyll to bypass Jekyll processing
           touch deploy/.nojekyll
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Force Push to gh-pages
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+          git add .
+          git commit -m "Sync with main branch"
+          git push origin gh-pages --force
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -45,3 +60,5 @@ jobs:
           branch: gh-pages
           clean: true
           token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Deploy from main branch"
+
