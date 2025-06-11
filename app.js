@@ -55,8 +55,7 @@ async function processInstruction() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while processing your request');
-        alert(OPENAI_API_KEY);
+        alert('An error occurred while processing your request using the key: ' + OPENAI_API_KEY);
     } finally {
         // Hide loading spinner
         document.getElementById('loading').style.display = 'none';
