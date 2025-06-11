@@ -11,7 +11,7 @@ const POINT_CLOUDS = {
 };
 
 // Function to generate point cloud based on instruction
-window.processInstruction = async function() {
+async function processInstruction() {
     const instruction = document.getElementById('instruction').value;
     if (!instruction) {
         alert('Please enter an instruction');
@@ -55,12 +55,12 @@ window.processInstruction = async function() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while processing your request');
+        alert('An error occurred while processing your request using the key: ' + OPENAI_API_KEY);
     } finally {
         // Hide loading spinner
         document.getElementById('loading').style.display = 'none';
     }
-};
+}
 
 // Function to visualize point cloud using Plotly
 function visualizePointCloud(points) {
@@ -181,10 +181,8 @@ function generatePyramid(numPoints) {
 }
 
 // Add event listener for Enter key
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('instruction').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            window.processInstruction();
-        }
-    });
+document.getElementById('instruction').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        processInstruction();
+    }
 }); 
