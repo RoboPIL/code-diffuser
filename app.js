@@ -51,7 +51,7 @@ async function processInstruction() {
         if (selection >= 1 && selection <= 5) {
             visualizePointCloud(POINT_CLOUDS[selection]);
         } else {
-            throw new Error('Invalid selection');
+            throw new Error(response.statusText);
         }
     } catch (error) {
         console.error('Error:', error);
