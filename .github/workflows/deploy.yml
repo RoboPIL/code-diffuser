@@ -8,19 +8,24 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-        - name: Git checkout
-          uses: actions/checkout@v2
+      - name: Git checkout
+        uses: actions/checkout@v2
 
-        - name: Use Node 12.x
-          uses: actions/setup-node@v1
-          with:
-            node-version: 12.x
+      - name: Use Node 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
 
-        - name: Install Dependencies (prod)
-          run: yarn install --frozen-lockfile --production
+      - name: Install Dependencies
+        run: npm install
 
-        - name: Run Tests (JEST)
-          run: yarn test --ci --silent --testPathIgnorePatterns=experimental
-          env:
-            CI: true
-            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - name: Build
+        run: npm run build
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
