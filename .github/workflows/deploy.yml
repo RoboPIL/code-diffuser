@@ -4,12 +4,17 @@ on:
   push:
     branches: [ gh-pages ]
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Use Node 12.x
         uses: actions/setup-node@v1
@@ -29,3 +34,8 @@ jobs:
         with:
           folder: .
           branch: gh-pages
+          clean: true
+          clean-exclude: |
+            .git
+            .github
+          token: ${{ secrets.GITHUB_TOKEN }}
