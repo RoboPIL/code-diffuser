@@ -1,6 +1,3 @@
-// Configuration
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
 // Precomputed point clouds
 const POINT_CLOUDS = {
     1: generateSphere(1000),
@@ -12,7 +9,13 @@ const POINT_CLOUDS = {
 
 // Function to generate point cloud based on instruction
 async function processInstruction() {
+    const apiKey = document.getElementById('apiKey').value;
     const instruction = document.getElementById('instruction').value;
+    
+    if (!apiKey) {
+        alert('Please enter your OpenAI API Key');
+        return;
+    }
     if (!instruction) {
         alert('Please enter an instruction');
         return;
@@ -27,7 +30,7 @@ async function processInstruction() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
                 model: "gpt-3.5-turbo",
@@ -46,16 +49,19 @@ async function processInstruction() {
         });
 
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error?.message || 'API request failed');
+        }
+
         const selection = JSON.parse(data.choices[0].message.content).selection;
-        
         if (selection >= 1 && selection <= 5) {
             visualizePointCloud(POINT_CLOUDS[selection]);
         } else {
-            throw new Error(response.statusText);
+            throw new Error('Invalid selection');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while processing your request using the key: ' + OPENAI_API_KEY);
+        alert('Error: ' + error.message);
     } finally {
         // Hide loading spinner
         document.getElementById('loading').style.display = 'none';
