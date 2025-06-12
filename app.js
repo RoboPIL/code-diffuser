@@ -20,40 +20,22 @@ async function processInstruction() {
     document.getElementById('loading').style.display = 'block';
 
     try {
-        // Call OpenAI API
-        const response = await fetch('https://openai-cf.codediffuser.workers.dev/v1/chat/completions', {
+        // Call the server endpoint
+        const response = await fetch('http://34.66.224.14:8080/generate', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer robopil_codediffuser`
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                model: "@cf/meta/llama-2-7b-chat-int8",
-                messages: [{
-                    role: "user",
-                    content: `Based on this instruction: "${instruction}", select the most appropriate 3D shape from these options:
-                    1: Sphere
-                    2: Cube
-                    3: Torus
-                    4: Cylinder
-                    5: Pyramid
-                    
-                    Return only a JSON object with a single number: {"selection": number}`
-                }]
-            })
+            body: JSON.stringify({ instruction })
         });
 
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.error?.message || 'API request failed');
+            throw new Error(data.error || 'Request failed');
         }
 
-        const selection = JSON.parse(data.choices[0].message.content).selection;
-        if (selection >= 1 && selection <= 5) {
-            visualizePointCloud(POINT_CLOUDS[selection]);
-        } else {
-            throw new Error('Invalid selection');
-        }
+        // Visualize the point cloud
+        visualizePointCloud(data.points);
     } catch (error) {
         console.error('Error:', error);
         alert('Error: ' + error.message);
