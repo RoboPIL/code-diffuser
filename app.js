@@ -21,7 +21,7 @@ async function processInstruction() {
 
     try {
         // Call the server endpoint
-        // const response = await fetch('http://34.66.224.14:8080/generate', {
+        // const response = await fetch('http://localhost:8080/generate', {
         const response = await fetch('https://yixuanwang.me/generate', {
             method: 'POST',
             headers: {
