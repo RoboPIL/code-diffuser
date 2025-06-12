@@ -9,13 +9,8 @@ const POINT_CLOUDS = {
 
 // Function to generate point cloud based on instruction
 async function processInstruction() {
-    const apiKey = document.getElementById('apiKey').value;
     const instruction = document.getElementById('instruction').value;
     
-    if (!apiKey) {
-        alert('Please enter your OpenAI API Key');
-        return;
-    }
     if (!instruction) {
         alert('Please enter an instruction');
         return;
@@ -26,14 +21,14 @@ async function processInstruction() {
 
     try {
         // Call OpenAI API
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch('https://openai-cf.codediffuser.workers.dev/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'Authorization': `Bearer robopil_codediffuser`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "@cf/meta/llama-2-7b-chat-int8",
                 messages: [{
                     role: "user",
                     content: `Based on this instruction: "${instruction}", select the most appropriate 3D shape from these options:
