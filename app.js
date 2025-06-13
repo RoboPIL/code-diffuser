@@ -170,4 +170,9 @@ document.getElementById('instruction').addEventListener('keypress', function(e) 
     if (e.key === 'Enter') {
         processInstruction();
     }
+});
+
+// On page load, show a precomputed point cloud (e.g., a sphere)
+window.addEventListener('DOMContentLoaded', function() {
+    visualizePointCloud(POINT_CLOUDS[1]); // or any other precomputed shape
 }); 

@@ -1,56 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Point Cloud Generator</title>
+    <meta charset="utf-8">
+    <meta name="description" content="CodeDiffuser">
+    <meta name="keywords" content="Robotic Manipulation, Language Models, Imitation Learning, RSS, Robotics, Diffusion, Code, Diffusion Policy, Research, Robotics Research, RSS 2025, Foundation Models">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CodeDiffuser: Attention-Enhanced Diffusion Policy via VLM-Generated Code for Instruction Ambiguity</title>
+
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NPJWBHQL');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- External Libraries -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        #visualization {
-            width: 100%;
-            height: 600px;
-            margin-top: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        #loading {
-            display: none;
-            margin: 20px 0;
-        }
-    </style>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4">3D Point Cloud Generator</h1>
-        
-        <div class="input-group">
-            <input type="text" id="instruction" class="form-control" placeholder="Enter your instruction (e.g., 'Generate a sphere with 1000 points')">
-            <button class="btn btn-primary" onclick="processInstruction()">Generate</button>
-        </div>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPJWBHQL"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+<section class="hero">
+    <div class="hero-body">
+        <div class="container is-fullhd">
+            <div class="columns is-centered">
+                <div class="column has-text-centered">
+                    <h1 class="title is-1 publication-title">CodeDiffuser: Attention-Enhanced Diffusion Policy via VLM-Generated Code for Instruction Ambiguity</h1>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block">
+                            <a target="_blank" href="https://www.linkedin.com/in/guang-yin-4a0176190/">Guang Yin</a><sup>3, *</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="#">Yitong Li</a><sup>4, *</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="https://wangyixuan12.github.io/">Yixuan Wang</a><sup>1, *</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="https://sites.google.com/umich.edu/dmcconachie">Dale McConachie</a><sup>2</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="https://www.paarthshah.me/about">Paarth Shah</a><sup>2</sup>,
+                        </span>
+                        <br>
+                        <span class="author-block">
+                            <a target="_blank" href="https://www.linkedin.com/in/kunimatsu-hashimoto-450258a1/">Kunimatsu Hashimoto</a><sup>2</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="https://huan-zhang.com/">Huan Zhang</a><sup>3</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="https://www.thekatherineliu.com/">Katherine Liu</a><sup>2</sup>,
+                        </span>
+                        <span class="author-block">
+                            <a target="_blank" href="https://yunzhuli.github.io/">Yunzhu Li</a><sup>1</sup>,
+                        </span>
+                    </div>
 
-        <div id="loading" class="text-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>1</sup>Columbia University,</span>
+                        <span class="author-block"><sup>2</sup>Toyota Research Institute,</span>
+                        <span class="author-block"><sup>3</sup>University of Illinois Urbana-Champaign,</span>
+                        <span class="author-block"><sup>4</sup>Tsinghua University</span>
+                    </div>
+
+                    <div class="column has-text-centered">
+                        <div class="publication-links">
+                            <!-- PDF Link -->
+                            <span class="link-block">
+                                <a target="_blank" href="media/pdf/main.pdf"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                    <span class="icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </span>
+                                    <span>Paper</span>
+                                </a>
+                            </span>
+
+                            <!-- Appendix Link -->
+                            <span class="link-block">
+                                <a target="_blank" href="#"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                    <span class="icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </span>
+                                    <span>Appendix [Coming Soon]</span>
+                                </a>
+                            </span>
+
+                            <!-- Arxiv Link -->
+                            <span class="link-block">
+                                <a target="_blank" href="https://arxiv.org"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                    <span class="icon">
+                                        <i class="fas fa-file"></i>
+                                    </span>
+                                    <span>ArXiv [Coming Soon]</span>
+                                </a>
+                            </span>
+
+                            <!-- Video Link -->
+                            <span class="link-block">
+                                <a target="_blank" href="https://youtu.be/IaDySSp5Wf8"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                    <span class="icon">
+                                        <i class="fab fa-youtube"></i>
+                                    </span>
+                                    <span>Video</span>
+                                </a>
+                            </span>
+
+                            <!-- Code Link -->
+                            <span class="link-block">
+                                <a target="_blank" href="#"
+                                   class="external-link button is-normal is-rounded is-dark">
+                                    <span class="icon">
+                                        <i class="fab fa-github"></i>
+                                    </span>
+                                    <span>Code [Coming Soon]</span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div id="visualization"></div>
     </div>
+</section>
 
-    <script src="app.js"></script>
+<section class="hero teaser">
+    <div class="container is-fullhd">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-vcentered is-centered">
+                    <video id="teaser" autoplay muted loop height="60%" width="60%">
+                        <source src="media/video/teaser.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <h2 class="subtitle has-text-centered">
+                    CodeDiffuser uses VLM-generated code to bridge <strong>high-level language</strong> and <strong>low-level action</strong> to steer low-level visuomotor policy.
+                </h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+                <div class="item">
+                    <video poster="" autoplay muted loop height="100%">
+                        <source src="media/video/1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item">
+                    <video poster="" autoplay muted loop height="100%">
+                        <source src="media/video/2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item">
+                    <video poster="" autoplay muted loop height="100%">
+                        <source src="media/video/3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item">
+                    <video poster="" autoplay muted loop height="100%">
+                        <source src="media/video/4.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item">
+                    <video poster="" autoplay muted loop height="100%">
+                        <source src="media/video/5.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item">
+                    <video poster="" autoplay muted loop height="100%">
+                        <source src="media/video/6.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+    <!-- Abstract. -->
+    <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified">
+                <p>
+                    Natural language instructions for robotic manipulation tasks often exhibit ambiguity and vagueness.
+                    For instance, the instruction "Hang a mug on the mug tree" may involve multiple valid actions if there are several mugs and branches to choose from.
+                    Existing language-conditioned policies typically rely on end-to-end models that jointly handle high-level semantic understanding and low-level action generation,
+                    which can result in suboptimal performance due to their lack of modularity and interpretability.
+                    To address these challenges, we introduce a novel robotic manipulation framework that can accomplish tasks specified by potentially ambiguous natural language.
+                    This framework employs a Vision-Language Model (VLM) to interpret abstract concepts in natural language instructions and generates task-specific code — an interpretable and executable intermediate representation.
+                    The generated code interfaces with the perception module to produce 3D attention maps that highlight task-relevant regions by integrating spatial and semantic information, effectively resolving ambiguities in instructions.
+                    Through extensive experiments, we identify key limitations of current imitation learning methods, such as poor adaptation to language and environmental variations.
+                    We show that our approach excels across challenging manipulation tasks involving language ambiguity, contact-rich manipulation, and multi-object interactions.
+                </p>
+            </div>
+            </div>
+        </div>
+    </div>
+  
+    <!-- Paper video. -->
+    <br>
+    <br>
+  
+    <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+            <h2 class="title is-3">Video</h2>
+            <div class="publication-video">
+              <iframe src="https://www.youtube.com/embed/IaDySSp5Wf8"
+                      frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            </div>
+        </div>
+    </div>
+  
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-12">
+                <h2 class="title is-3">Method</h2>
+            </div>
+        </div>
+        <div class="columns">
+            <!-- first row: instruction -->
+            <div class="columns" style="margin-bottom: -10rem;">
+                <div class="column is-6 is-offset-5" style="max-width: 100%;">
+                    <div style="width: 60%; min-width: 300px; max-width: 500px;">
+                        <div class="field has-addons">
+                            <div class="control has-icons-left is-expanded">
+                                <input type="text" id="instruction" class="input is-small" style="font-size: 0.875rem;" placeholder="Hang the blue mug on the left branch.">
+                                <span class="icon is-left is-small">
+                                    <i class="fas fa-terminal"></i>
+                                </span>
+                            </div>
+                            <div class="control">
+                                <button class="button is-primary is-small" onclick="processInstruction()" style="font-size: 0.875rem;">
+                                    <span>Enter</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="loading" class="has-text-left" style="display: none; margin-top: 0.5rem;">
+                            <span class="icon">
+                                <i class="fas fa-circle-notch fa-spin"></i>
+                            </span>
+                            <span>Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- second row: method and point cloud visualization -->
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <figure class="image" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; ">
+                    <img src="media/images/method.png" alt="Method Overview" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+                </figure>
+            </div>
+            <!-- Right column: Point cloud visualization only -->
+            <div class="column is-3">
+                <div id="visualization" style="width: 100%; height: 400px;  display: flex; align-items: center; justify-content: center;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-12">
+                <h2 class="title is-3">Results</h2>
+            </div>
+        </div>
+    </div>
+    <!-- list of videos -->
+    <div class="columns is-centered">
+        <div class="column has-text-centered">
+            <video id="dist1" controls muted autoplay loop width="70%">
+                <source src="media/video/7.mp4" 
+                type="video/mp4">
+            </video>
+        </div>
+    </div>
+    
+    <div class="columns is-centered">
+        <div class="column has-text-centered">
+            <video id="dist2" controls muted autoplay loop width="70%">
+                <source src="media/video/8.mp4" 
+                type="video/mp4">
+            </video>
+        </div>
+    </div>
+</section>
+
+<script src="app.js"></script>
 </body>
 </html>
 
