@@ -7,48 +7,36 @@ const POINT_CLOUDS = {
     5: generatePyramid(1000)
 };
 
-// Function to generate point cloud based on instruction
-async function processInstruction() {
-    const instruction = document.getElementById('instruction').value;
-    
-    if (!instruction) {
-        alert('Please enter an instruction');
-        return;
-    }
+let isProcessing = false; // Track if we're currently processing a request
 
-    // Show loading spinner
-    document.getElementById('loading').style.display = 'block';
+// Function to check if Plotly is loaded
+function isPlotlyReady() {
+    return typeof Plotly !== 'undefined';
+}
 
-    try {
-        // Call the server endpoint
-        // const response = await fetch('http://localhost:8080/generate', {
-        const response = await fetch('https://yixuanwang.me/generate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ instruction })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error || 'Request failed');
+// Function to wait for Plotly to load
+function waitForPlotly(callback, maxAttempts = 10) {
+    let attempts = 0;
+    const checkInterval = setInterval(() => {
+        attempts++;
+        if (isPlotlyReady()) {
+            clearInterval(checkInterval);
+            callback();
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkInterval);
+            console.error('Plotly failed to load');
+            alert('Visualization library failed to load. Please refresh the page.');
         }
-
-        // Visualize the point cloud
-        visualizePointCloud(data.points);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error: ' + error.message);
-    } finally {
-        // Hide loading spinner
-        document.getElementById('loading').style.display = 'none';
-    }
+    }, 500);
 }
 
 // Function to visualize point cloud using Plotly
 function visualizePointCloud(points) {
+    if (!isPlotlyReady()) {
+        waitForPlotly(() => visualizePointCloud(points));
+        return;
+    }
+
     const x = points.map(p => p[0]);
     const y = points.map(p => p[1]);
     const z = points.map(p => p[2]);
@@ -82,7 +70,76 @@ function visualizePointCloud(points) {
         }
     };
 
-    Plotly.newPlot('visualization', [trace], layout);
+    try {
+        Plotly.newPlot('visualization', [trace], layout);
+    } catch (error) {
+        console.error('Error plotting:', error);
+        alert('Error creating visualization. Please try again.');
+    }
+}
+
+// Function to generate point cloud based on instruction
+async function processInstruction() {
+    if (isProcessing) return; // Prevent multiple simultaneous submissions
+    
+    const instructionInput = document.getElementById('instruction');
+    const submitButton = document.querySelector('.button.is-primary');
+    const loadingSpinner = document.getElementById('loading');
+    
+    if (!instructionInput.value) {
+        alert('Please enter an instruction');
+        return;
+    }
+
+    // Disable UI elements and show loading state
+    isProcessing = true;
+    instructionInput.disabled = true;
+    submitButton.disabled = true;
+    loadingSpinner.style.display = 'block';
+
+    // Setup request timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+    try {
+        // Call the server endpoint
+        const response = await fetch('https://yixuanwang.me/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ instruction: instructionInput.value }),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Request failed');
+        }
+
+        const data = await response.json();
+        // Visualize the point cloud
+        visualizePointCloud(data.points);
+    } catch (error) {
+        console.error('Error:', error);
+        if (error.name === 'AbortError') {
+            alert('Request timed out. Please try again.');
+        } else {
+            alert('Error: ' + error.message);
+        }
+        // Show a precomputed point cloud as fallback
+        visualizePointCloud(POINT_CLOUDS[1]);
+    } finally {
+        // Re-enable UI elements and hide loading state
+        isProcessing = false;
+        instructionInput.disabled = false;
+        submitButton.disabled = false;
+        loadingSpinner.style.display = 'none';
+        clearTimeout(timeoutId);
+    }
 }
 
 // Point cloud generation functions
@@ -165,14 +222,17 @@ function generatePyramid(numPoints) {
     return points;
 }
 
+// Initialize visualization when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for Plotly to load before showing initial visualization
+    waitForPlotly(() => {
+        visualizePointCloud(POINT_CLOUDS[1]); // Show initial sphere
+    });
+});
+
 // Add event listener for Enter key
 document.getElementById('instruction').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         processInstruction();
     }
-});
-
-// On page load, show a precomputed point cloud (e.g., a sphere)
-window.addEventListener('DOMContentLoaded', function() {
-    visualizePointCloud(POINT_CLOUDS[1]); // or any other precomputed shape
 }); 

@@ -18,7 +18,7 @@
     <!-- External Libraries -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
 
     <!-- Fonts -->
@@ -266,24 +266,31 @@
             <div class="columns" style="margin-bottom: -10rem;">
                 <div class="column is-6 is-offset-5" style="max-width: 100%;">
                     <div style="width: 60%; min-width: 300px; max-width: 500px;">
-                        <div class="field has-addons">
+                        <div class="field has-addons" style="position: relative;">
                             <div class="control has-icons-left is-expanded">
-                                <input type="text" id="instruction" class="input is-small" style="font-size: 0.875rem;" placeholder="Hang the blue mug on the left branch.">
+                                <input type="text" 
+                                       id="instruction" 
+                                       class="input is-small" 
+                                       style="font-size: 0.875rem;" 
+                                       placeholder="Hang the blue mug on the left branch."
+                                       autocomplete="off"
+                                       spellcheck="false">
                                 <span class="icon is-left is-small">
                                     <i class="fas fa-terminal"></i>
                                 </span>
                             </div>
                             <div class="control">
-                                <button class="button is-primary is-small" onclick="processInstruction()" style="font-size: 0.875rem;">
+                                <button class="button is-primary is-small" 
+                                        onclick="processInstruction()" 
+                                        style="font-size: 0.875rem; min-width: 70px;">
                                     <span>Enter</span>
                                 </button>
                             </div>
-                        </div>
-                        <div id="loading" class="has-text-left" style="display: none; margin-top: 0.5rem;">
-                            <span class="icon">
-                                <i class="fas fa-circle-notch fa-spin"></i>
-                            </span>
-                            <span>Loading...</span>
+                            <div class="control" id="loading" style="display: none; position: absolute; right: -30px; top: 50%; transform: translateY(-50%);">
+                                <span class="icon is-small">
+                                    <i class="fas fa-circle-notch fa-spin"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
