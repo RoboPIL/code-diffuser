@@ -94,7 +94,8 @@ async function processInstruction() {
     try {
         // Call the server endpoint
         // const response = await fetch('http://localhost:8080/generate', {
-        const response = await fetch('https://yixuanwang.me/generate', {
+        // const response = await fetch('https://yixuanwang.me/generate', {
+        const response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -123,7 +124,8 @@ async function processInstruction() {
         }
         // Show a precomputed point cloud as fallback
         // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        fetch('https://yixuanwang.me/media/pcd/precomputed.json')
+        // fetch('https://yixuanwang.me/media/pcd/precomputed.json')
+        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
@@ -154,7 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
     waitForPlotly(() => {
         console.log('Fetching precomputed point cloud...');
         // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        fetch('https://yixuanwang.me/media/pcd/precomputed.json')
+        // fetch('https://yixuanwang.me/media/pcd/precomputed.json')
+        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
