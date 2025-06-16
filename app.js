@@ -1,4 +1,5 @@
 let isProcessing = false; // Track if we're currently processing a request
+let pollingInterval = null; // Track the polling interval
 
 // Function to check if Plotly is loaded
 function isPlotlyReady() {
@@ -68,6 +69,53 @@ function visualizePointCloud(points) {
     }
 }
 
+// Function to fetch intermediate results
+async function fetchIntermediateResults() {
+    try {
+        // Fetch generated code
+        const codeResponse = await fetch('http://localhost:8080/media/code/generated_code.py');
+        if (codeResponse.ok) {
+            const code = await codeResponse.text();
+            const generatedCode = document.getElementById('generated-code');
+            generatedCode.textContent = code;
+        }
+
+        // Fetch detection images
+        const img1Response = await fetch('http://localhost:8080/media/images/detection_img_0.png');
+        if (img1Response.ok) {
+            const rgbImage = document.getElementById('rgb-detection');
+            rgbImage.src = 'http://localhost:8080/media/images/detection_img_0.png?' + new Date().getTime(); // Add timestamp to prevent caching
+        }
+
+        const img2Response = await fetch('http://localhost:8080/media/images/detection_img_1.png');
+        if (img2Response.ok) {
+            const depthImage = document.getElementById('depth-detection');
+            depthImage.src = 'http://localhost:8080/media/images/detection_img_1.png?' + new Date().getTime(); // Add timestamp to prevent caching
+        }
+    } catch (error) {
+        console.error('Error fetching intermediate results:', error);
+    }
+}
+
+// Function to start polling for intermediate results
+function startPolling() {
+    // Clear any existing polling
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+    }
+    
+    // Start new polling
+    pollingInterval = setInterval(fetchIntermediateResults, 5000); // Poll every 5 seconds
+}
+
+// Function to stop polling
+function stopPolling() {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+    }
+}
+
 // Function to generate point cloud based on instruction
 async function processInstruction() {
     if (isProcessing) return; // Prevent multiple simultaneous submissions
@@ -93,9 +141,7 @@ async function processInstruction() {
 
     try {
         // Call the server endpoint
-        // const response = await fetch('http://localhost:8080/generate', {
-        // const response = await fetch('https://yixuanwang.me/generate', {
-        const response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/generate', {
+        const response = await fetch('http://localhost:8080/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,6 +161,7 @@ async function processInstruction() {
         const data = await response.json();
         // Visualize the point cloud
         visualizePointCloud(data.points);
+        
     } catch (error) {
         console.error('Error:', error);
         if (error.name === 'AbortError') {
@@ -123,9 +170,7 @@ async function processInstruction() {
             alert('Error: ' + error.message);
         }
         // Show a precomputed point cloud as fallback
-        // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        // fetch('https://yixuanwang.me/media/pcd/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
+        fetch('http://localhost:8080/media/pcd/precomputed.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
@@ -155,9 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wait for Plotly to load before showing initial visualization
     waitForPlotly(() => {
         console.log('Fetching precomputed point cloud...');
-        // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        // fetch('https://yixuanwang.me/media/pcd/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
+        fetch('http://localhost:8080/media/pcd/precomputed.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
@@ -175,9 +218,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Add event listener for Enter key
-document.getElementById('instruction').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
+// Function to handle instruction selection from dropdown
+function handleInstructionSelect() {
+    const select = document.getElementById('instruction-select');
+    const input = document.getElementById('instruction');
+    
+    if (select.value === 'custom') {
+        // Enable input for custom instruction
+        input.value = '';
+        input.disabled = false;
+        input.focus();
+    } else {
+        // Set the selected example
+        input.value = select.value;
+        input.disabled = true;
         processInstruction();
     }
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('instruction');
+    const select = document.getElementById('instruction-select');
+    
+    // Add event listener for Enter key
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            processInstruction();
+        }
+    });
+
+    // Initialize with custom instruction selected
+    select.value = 'custom';
+    input.disabled = false;
+
+    // Load initial media files
+    fetchIntermediateResults();
+
+    // Start polling for intermediate results immediately
+    startPolling();
 }); 
