@@ -1,6 +1,4 @@
 let isProcessing = false; // Track if we're currently processing a request
-let pollingInterval = null; // Track the polling interval
-let pollingIntervalBattery = null; // Track the polling interval for battery scenario
 
 // Function to check if Plotly is loaded
 function isPlotlyReady() {
@@ -72,10 +70,11 @@ function visualizePointCloud(points) {
 
 // Function to fetch intermediate results
 async function fetchIntermediateResults() {
+    base_url = 'https://codediffuser-demo-55622474665.us-central1.run.app'; // for deployment
+    // base_url = 'http://localhost:8080'; // for local development
     try {
         // Fetch generated code
-        // const codeResponse = await fetch('http://localhost:8080/media/code/generated_code.py');
-        const codeResponse = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/code/generated_code.py');
+        const codeResponse = await fetch(`${base_url}/media/code/default/generated_code.py`);
         if (codeResponse.ok) {
             const code = await codeResponse.text();
             const generatedCode = document.getElementById('generated-code');
@@ -83,47 +82,26 @@ async function fetchIntermediateResults() {
         }
 
         // Fetch detection images
-        // const img1Response = await fetch('http://localhost:8080/media/images/detection_img_0.png');
-        const img1Response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/images/detection_img_0.png');
+        const img1Response = await fetch(`${base_url}/media/images/default/detection_img_0.png`);
         if (img1Response.ok) {
             const rgbImage = document.getElementById('detection-img-0');
-            // rgbImage.src = 'http://localhost:8080/media/images/detection_img_0.png?' + new Date().getTime(); // Add timestamp to prevent caching
-            rgbImage.src = 'https://codediffuser-demo-55622474665.us-central1.run.app/media/images/detection_img_0.png?' + new Date().getTime(); // Add timestamp to prevent caching
+            rgbImage.src = `${base_url}/media/images/default/detection_img_0.png?${new Date().getTime()}`; // Add timestamp to prevent caching
         }
 
-        // const img2Response = await fetch('http://localhost:8080/media/images/detection_img_1.png');
-        const img2Response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/images/detection_img_1.png');
+        const img2Response = await fetch(`${base_url}/media/images/default/detection_img_1.png`);
         if (img2Response.ok) {
             const depthImage = document.getElementById('detection-img-1');
-            // depthImage.src = 'http://localhost:8080/media/images/detection_img_1.png?' + new Date().getTime(); // Add timestamp to prevent caching
-            depthImage.src = 'https://codediffuser-demo-55622474665.us-central1.run.app/media/images/detection_img_1.png?' + new Date().getTime(); // Add timestamp to prevent caching
+            depthImage.src = `${base_url}/media/images/default/detection_img_1.png?${new Date().getTime()}`; // Add timestamp to prevent caching
         }
     } catch (error) {
         console.error('Error fetching intermediate results:', error);
     }
 }
 
-// Function to start polling for intermediate results
-function startPolling() {
-    // Clear any existing polling
-    if (pollingInterval) {
-        clearInterval(pollingInterval);
-    }
-    
-    // Start new polling
-    pollingInterval = setInterval(fetchIntermediateResults, 5000); // Poll every 5 seconds
-}
-
-// Function to stop polling
-function stopPolling() {
-    if (pollingInterval) {
-        clearInterval(pollingInterval);
-        pollingInterval = null;
-    }
-}
-
 // Function to generate point cloud based on instruction
 async function processInstruction() {
+    base_url = 'https://codediffuser-demo-55622474665.us-central1.run.app'; // for deployment
+    // base_url = 'http://localhost:8080'; // for local development
     if (isProcessing) return; // Prevent multiple simultaneous submissions
     
     const instructionInput = document.getElementById('instruction');
@@ -147,8 +125,7 @@ async function processInstruction() {
 
     try {
         // Call the server endpoint
-        // const response = await fetch('http://localhost:8080/generate', {
-        const response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/generate', {
+        const response = await fetch(`${base_url}/generate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -168,6 +145,22 @@ async function processInstruction() {
         const data = await response.json();
         // Visualize the point cloud
         visualizePointCloud(data.points);
+
+        // Update generated code
+        if (data.generated_code) {
+            const generatedCode = document.getElementById('generated-code');
+            generatedCode.textContent = data.generated_code;
+        }
+
+        // Update detection images
+        if (data.detection_images && data.detection_images.length >= 2) {
+            const rgbImage = document.getElementById('detection-img-0');
+            const depthImage = document.getElementById('detection-img-1');
+            
+            rgbImage.src = `data:image/png;base64,${data.detection_images['detection_img_0']}`;
+            depthImage.src = `data:image/png;base64,${data.detection_images['detection_img_1']}`;
+        }
+        
         
     } catch (error) {
         console.error('Error:', error);
@@ -177,8 +170,7 @@ async function processInstruction() {
             alert('Error: ' + error.message);
         }
         // Show a precomputed point cloud as fallback
-        // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
+        fetch(`${base_url}/media/pcd/default/precomputed.json`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
@@ -205,11 +197,13 @@ async function processInstruction() {
 
 // Initialize visualization when the page loads
 document.addEventListener('DOMContentLoaded', function() {
+    base_url = 'https://codediffuser-demo-55622474665.us-central1.run.app'; // for deployment
+    // base_url = 'http://localhost:8080'; // for local development
+    
     // Wait for Plotly to load before showing initial visualization
     waitForPlotly(() => {
         console.log('Fetching precomputed point cloud...');
-        // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
+        fetch(`${base_url}/media/pcd/default/precomputed.json`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
@@ -219,12 +213,89 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 console.log('Loaded data:', data);
                 visualizePointCloud(data);
+                
+                // Load initial code
+                return fetch(`${base_url}/media/code/default/generated_code.py`);
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP error ' + response.status);
+                return response.text();
+            })
+            .then(code => {
+                console.log('Loaded initial code');
+                const generatedCode = document.getElementById('generated-code');
+                generatedCode.textContent = code;
+                
+                // Load initial images
+                const rgbImage = document.getElementById('detection-img-0');
+                const depthImage = document.getElementById('detection-img-1');
+                rgbImage.src = `${base_url}/media/images/default/detection_img_0.png`;
+                depthImage.src = `${base_url}/media/images/default/detection_img_1.png`;
             })
             .catch(err => {
-                console.error('Failed to load precomputed point cloud:', err);
-                alert('Failed to load precomputed point cloud: ' + err.message);
+                console.error('Failed to load initial data:', err);
+                alert('Failed to load initial data: ' + err.message);
+            });
+
+        // Initialize battery scenario
+        console.log('Fetching initial battery data...');
+        
+        // Load battery point cloud
+        fetch(`${base_url}/media/pcd/default/battery/precomputed.json`)
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP error ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Loaded battery point cloud data');
+                visualizePointCloudBattery(data);
+                
+                // Load initial battery code
+                return fetch(`${base_url}/media/code/default/battery/generated_code.py`);
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP error ' + response.status);
+                return response.text();
+            })
+            .then(code => {
+                console.log('Loaded initial battery code');
+                const generatedCode = document.getElementById('generated-code-battery');
+                generatedCode.textContent = code;
+                
+                // Load initial battery images
+                const rgbImage = document.getElementById('detection-img-0-battery');
+                const depthImage = document.getElementById('detection-img-1-battery');
+                rgbImage.src = `${base_url}/media/images/default/battery/detection_img_0.png`;
+                depthImage.src = `${base_url}/media/images/default/battery/detection_img_1.png`;
+            })
+            .catch(err => {
+                console.error('Failed to load initial battery data:', err);
+                alert('Failed to load initial battery data: ' + err.message);
             });
     });
+
+    // Initialize input handlers
+    const input = document.getElementById('instruction');
+    const select = document.getElementById('instruction-select');
+    const inputBattery = document.getElementById('instruction-battery');
+    const selectBattery = document.getElementById('instruction-select-battery');
+    
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            processInstruction();
+        }
+    });
+
+    inputBattery.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            processInstructionBattery();
+        }
+    });
+
+    select.value = 'custom';
+    selectBattery.value = 'custom';
+    input.disabled = false;
+    inputBattery.disabled = false;
 });
 
 // Function to handle instruction selection from dropdown
@@ -247,10 +318,11 @@ function handleInstructionSelect() {
 
 // Function to fetch intermediate results for battery scenario
 async function fetchIntermediateResultsBattery() {
+    base_url = 'https://codediffuser-demo-55622474665.us-central1.run.app'; // for deployment
+    // base_url = 'http://localhost:8080'; // for local development
     try {
         // Fetch generated code
-        // const codeResponse = await fetch('http://localhost:8080/media/code/battery/generated_code.py');
-        const codeResponse = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/code/battery/generated_code.py');
+        const codeResponse = await fetch(`${base_url}/media/code/default/battery/generated_code.py`);
         if (codeResponse.ok) {
             const code = await codeResponse.text();
             const generatedCode = document.getElementById('generated-code-battery');
@@ -258,20 +330,16 @@ async function fetchIntermediateResultsBattery() {
         }
 
         // Fetch detection images
-        // const img1Response = await fetch('http://localhost:8080/media/images/battery/detection_img_0.png');
-        const img1Response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/images/battery/detection_img_0.png');
+        const img1Response = await fetch(`${base_url}/media/images/default/battery/detection_img_0.png`);
         if (img1Response.ok) {
             const rgbImage = document.getElementById('detection-img-0-battery');
-            // rgbImage.src = 'http://localhost:8080/media/images/battery/detection_img_0.png?' + new Date().getTime();
-            rgbImage.src = 'https://codediffuser-demo-55622474665.us-central1.run.app/media/images/battery/detection_img_0.png?' + new Date().getTime();
+            rgbImage.src = `${base_url}/media/images/default/battery/detection_img_0.png?${new Date().getTime()}`;
         }
 
-        // const img2Response = await fetch('http://localhost:8080/media/images/battery/detection_img_1.png');
-        const img2Response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/images/battery/detection_img_1.png');
+        const img2Response = await fetch(`${base_url}/media/images/default/battery/detection_img_1.png`);
         if (img2Response.ok) {
             const depthImage = document.getElementById('detection-img-1-battery');
-            // depthImage.src = 'http://localhost:8080/media/images/battery/detection_img_1.png?' + new Date().getTime();
-            depthImage.src = 'https://codediffuser-demo-55622474665.us-central1.run.app/media/images/battery/detection_img_1.png?' + new Date().getTime();
+            depthImage.src = `${base_url}/media/images/default/battery/detection_img_1.png?${new Date().getTime()}`;
         }
     } catch (error) {
         console.error('Error fetching intermediate results for battery scenario:', error);
@@ -280,6 +348,8 @@ async function fetchIntermediateResultsBattery() {
 
 // Function to process battery instruction
 async function processInstructionBattery() {
+    base_url = 'https://codediffuser-demo-55622474665.us-central1.run.app'; // for deployment
+    // base_url = 'http://localhost:8080'; // for local development
     if (isProcessing) return;
     
     const instructionInput = document.getElementById('instruction-battery');
@@ -300,8 +370,7 @@ async function processInstructionBattery() {
     const timeoutId = setTimeout(() => controller.abort(), 3600000);
 
     try {
-        // const response = await fetch('http://localhost:8080/generate_battery', {
-        const response = await fetch('https://codediffuser-demo-55622474665.us-central1.run.app/generate_battery', {
+        const response = await fetch(`${base_url}/generate_battery`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -320,6 +389,21 @@ async function processInstructionBattery() {
 
         const data = await response.json();
         visualizePointCloudBattery(data.points);
+        // Update generated code
+        if (data.generated_code) {
+            const generatedCode = document.getElementById('generated-code');
+            generatedCode.textContent = data.generated_code;
+        }
+
+        // Update detection images
+        if (data.detection_images && data.detection_images.length >= 2) {
+            const rgbImage = document.getElementById('detection-img-0');
+            const depthImage = document.getElementById('detection-img-1');
+            
+            rgbImage.src = `data:image/png;base64,${data.detection_images['detection_img_0']}`;
+            depthImage.src = `data:image/png;base64,${data.detection_images['detection_img_1']}`;
+        }
+        
         
     } catch (error) {
         console.error('Error:', error);
@@ -328,8 +412,7 @@ async function processInstructionBattery() {
         } else {
             alert('Error: ' + error.message);
         }
-        // fetch('http://localhost:8080/media/pcd/battery/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/battery/precomputed.json')
+        fetch(`${base_url}/media/pcd/default/battery/precomputed.json`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP error ' + response.status);
@@ -413,96 +496,5 @@ function handleInstructionSelectBattery() {
         input.value = select.value;
         input.disabled = true;
         processInstructionBattery();
-    }
-}
-
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    // Wait for Plotly to load before showing initial visualization
-    waitForPlotly(() => {
-        // Initialize first scenario
-        console.log('Fetching precomputed point cloud...');
-        // fetch('http://localhost:8080/media/pcd/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/precomputed.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP error ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Loaded data:', data);
-                visualizePointCloud(data);
-            })
-            .catch(err => {
-                console.error('Failed to load precomputed point cloud:', err);
-                alert('Failed to load precomputed point cloud: ' + err.message);
-            });
-
-        // Initialize second scenario
-        console.log('Fetching precomputed battery point cloud...');
-        // fetch('http://localhost:8080/media/pcd/battery/precomputed.json')
-        fetch('https://codediffuser-demo-55622474665.us-central1.run.app/media/pcd/battery/precomputed.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP error ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Loaded battery data:', data);
-                visualizePointCloudBattery(data);
-            })
-            .catch(err => {
-                console.error('Failed to load precomputed battery point cloud:', err);
-                alert('Failed to load precomputed battery point cloud: ' + err.message);
-            });
-    });
-
-    // Initialize input handlers
-    const input = document.getElementById('instruction');
-    const select = document.getElementById('instruction-select');
-    const inputBattery = document.getElementById('instruction-battery');
-    const selectBattery = document.getElementById('instruction-select-battery');
-    
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            processInstruction();
-        }
-    });
-
-    inputBattery.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            processInstructionBattery();
-        }
-    });
-
-    select.value = 'custom';
-    selectBattery.value = 'custom';
-    input.disabled = false;
-    inputBattery.disabled = false;
-
-    // Load initial media files for both scenarios
-    fetchIntermediateResults();
-    fetchIntermediateResultsBattery();
-
-    // Start polling for both scenarios
-    startPolling();
-    startPollingBattery();
-});
-
-// Function to start polling for battery scenario
-function startPollingBattery() {
-    if (pollingIntervalBattery) {
-        clearInterval(pollingIntervalBattery);
-    }
-    pollingIntervalBattery = setInterval(fetchIntermediateResultsBattery, 5000);
-}
-
-// Function to stop polling for battery scenario
-function stopPollingBattery() {
-    if (pollingIntervalBattery) {
-        clearInterval(pollingIntervalBattery);
-        pollingIntervalBattery = null;
     }
 } 
