@@ -391,14 +391,14 @@ async function processInstructionBattery() {
         visualizePointCloudBattery(data.points);
         // Update generated code
         if (data.generated_code) {
-            const generatedCode = document.getElementById('generated-code');
+            const generatedCode = document.getElementById('generated-code-battery');
             generatedCode.textContent = data.generated_code;
         }
 
         // Update detection images
         if (data.detection_images && data.detection_images.length >= 2) {
-            const rgbImage = document.getElementById('detection-img-0');
-            const depthImage = document.getElementById('detection-img-1');
+            const rgbImage = document.getElementById('detection-img-0-battery');
+            const depthImage = document.getElementById('detection-img-1-battery');
             
             rgbImage.src = `data:image/png;base64,${data.detection_images['detection_img_0']}`;
             depthImage.src = `data:image/png;base64,${data.detection_images['detection_img_1']}`;

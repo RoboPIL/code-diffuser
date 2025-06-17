@@ -166,7 +166,7 @@
                 <br>
                 <br>
                 <h2 class="subtitle has-text-centered">
-                    CodeDiffuser uses VLM-generated code to bridge <strong>high-level language</strong> and <strong>low-level action</strong> to steer low-level visuomotor policy.
+                    <strong>TL;DR:</strong> CodeDiffuser uses VLM-generated code to bridge <strong>high-level language</strong> and <strong>low-level action</strong> to steer low-level visuomotor policy.
                 </h2>
             </div>
         </div>
@@ -182,18 +182,13 @@
             </div>
         </div>
         <div class="columns is-centered">
-            <div class="column is-8">
+            <div class="column is-5">
                 <div class="columns is-multiline is-centered">
                     <figure class="image" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
                         <img src="media/images/hang_mug.png" style="max-width: 90%; max-height: 90%; object-fit: contain;">
                     </figure>
                 </div>
-            </div>
-        </div>
-
-        <div class="columns is-centered">
-            <div class="column is-8">
-                <div style="margin-top: 1rem; text-align: left;">
+                <div style="text-align: left;">
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 0.5rem;">Select an example or enter custom instruction: (⏳ Waiting time up to one minute.)</p>
                     <div class="field">
                         <div class="control">
@@ -237,10 +232,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="columns is-centered">
-            <div class="column is-8">
+            <div class="column is-7" style="margin-top: 2rem;">
                 <div class="box">
                     <h3 class="title is-5">3D Attention Map Visualization</h3>
                     <div id="visualization" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;"></div>
@@ -248,18 +240,30 @@
             </div>
         </div>
 
+        <!-- <div class="columns is-centered">
+        </div> -->
+
+        <!-- <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="box">
+                    <h3 class="title is-5">3D Attention Map Visualization</h3>
+                    <div id="visualization" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;"></div>
+                </div>
+            </div>
+        </div> -->
+
         <div class="columns is-centered">
-            <div class="column is-10">
+            <div class="column is-12">
                 <div class="box">
                     <h3 class="title is-5">Intermediate Results</h3>
                     <div class="columns">
-                        <div class="column is-4">
+                        <div class="column is-5">
                             <h4 class="title is-6">Generated Code</h4>
                             <pre id="generated-code" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; max-height: 320px; overflow-y: auto;">
                                 // Code will appear here
                             </pre>
                         </div>
-                        <div class="column is-8">
+                        <div class="column is-7">
                             <h4 class="title is-6">Object Detection</h4>
                             <div id="detection-results" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; max-height: 320px; overflow-y: auto;">
                                 <div class="columns is-multiline">
@@ -288,19 +292,13 @@
 
         <!-- First row: Image observation for Scenario 2 -->
         <div class="columns is-centered">
-            <div class="column is-8">
+            <div class="column is-5">
                 <div class="columns is-multiline is-centered">
                     <figure class="image" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
                         <img src="media/images/pack_battery.png" style="max-width: 90%; max-height: 90%; object-fit: contain;">
                     </figure>
                 </div>
-            </div>
-        </div>
-
-        <!-- Instruction inputs for Scenario 2 -->
-        <div class="columns is-centered">
-            <div class="column is-8">
-                <div style="margin-top: 1rem; text-align: left;">
+                <div style="text-align: left;">
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 0.5rem;">Select an example or enter custom instruction: (⏳ Waiting time up to one minute.)</p>
                     <div class="field">
                         <div class="control">
@@ -342,11 +340,8 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Second row: 3D point cloud visualization for Scenario 2 -->
-        <div class="columns is-centered">
-            <div class="column is-8">
+            <div class="column is-7" style="margin-top: 2rem;">
                 <div class="box">
                     <h3 class="title is-5">3D Attention Map Visualization</h3>
                     <div id="visualization-battery" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;"></div>
@@ -354,19 +349,29 @@
             </div>
         </div>
 
+        <!-- Instruction inputs for Scenario 2 -->
+        <!-- <div class="columns is-centered">
+            <div class="column is-8">
+            </div>
+        </div> -->
+
+        <!-- Second row: 3D point cloud visualization for Scenario 2 -->
+        <!-- <div class="columns is-centered">
+        </div> -->
+
         <!-- Third row: Intermediate results for Scenario 2 -->
         <div class="columns is-centered">
-            <div class="column is-10">
+            <div class="column is-12">
                 <div class="box">
                     <h3 class="title is-5">Intermediate Results</h3>
                     <div class="columns">
-                        <div class="column is-4">
+                        <div class="column is-5">
                             <h4 class="title is-6">Generated Code</h4>
                             <pre id="generated-code-battery" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; max-height: 320px; overflow-y: auto;">
                                 // Code will appear here
                             </pre>
                         </div>
-                        <div class="column is-8">
+                        <div class="column is-7">
                             <h4 class="title is-6">Object Detection</h4>
                             <div id="detection-results-battery" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; max-height: 320px; overflow-y: auto;">
                                 <div class="columns is-multiline">
@@ -388,45 +393,6 @@
     </div>
 </section>
 
-
-<section class="hero is-light is-small">
-    <div class="hero-body">
-        <div class="container">
-            <div id="results-carousel" class="carousel results-carousel">
-                <div class="item">
-                    <video poster="" autoplay muted loop height="100%">
-                        <source src="media/video/1.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item">
-                    <video poster="" autoplay muted loop height="100%">
-                        <source src="media/video/2.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item">
-                    <video poster="" autoplay muted loop height="100%">
-                        <source src="media/video/3.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item">
-                    <video poster="" autoplay muted loop height="100%">
-                        <source src="media/video/4.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item">
-                    <video poster="" autoplay muted loop height="100%">
-                        <source src="media/video/5.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item">
-                    <video poster="" autoplay muted loop height="100%">
-                        <source src="media/video/6.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <section class="section">
     <!-- Abstract. -->
@@ -495,35 +461,38 @@
             </div>
         </div>
     </div>
+    <br>
     <!-- list of videos -->
-    <div class="columns is-centered">
-        <div class="column is-5 has-text-centered">
-            <video id="dist1" controls muted autoplay loop width="100%">
-                <source src="media/video/1.mp4" 
-                type="video/mp4">
-            </video>
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/1.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/4.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="column is-5 has-text-centered">
-            <video id="dist2" controls muted autoplay loop width="100%">
-                <source src="media/video/2.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-    </div>
-    <div class="columns is-centered">
-        <div class="column is-5 has-text-centered">
-            <video id="dist1" controls muted autoplay loop width="100%">
-                <source src="media/video/3.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-        <div class="column is-5 has-text-centered">
-            <video id="dist2" controls muted autoplay loop width="100%">
-                <source src="media/video/4.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-    </div>
+    </section>
+    <br>
+    <br>
     <div class="container">
         <div class="columns is-centered has-text-centered">
             <div class="column is-12">
@@ -531,34 +500,47 @@
             </div>
         </div>
     </div>
-    <div class="columns is-centered">
-        <div class="column is-5 has-text-centered">
-            <video id="dist1" controls muted autoplay loop width="100%">
-                <source src="media/video/5.mp4" 
-                type="video/mp4">
-            </video>
+    <br>
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/5.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/6.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/7.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/8.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/9.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/10.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="column is-5 has-text-centered">
-            <video id="dist2" controls muted autoplay loop width="100%">
-                <source src="media/video/6.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-    </div>
-    <div class="columns is-centered">
-        <div class="column is-5 has-text-centered">
-            <video id="dist1" controls muted autoplay loop width="100%">
-                <source src="media/video/7.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-        <div class="column is-5 has-text-centered">
-            <video id="dist2" controls muted autoplay loop width="100%">
-                <source src="media/video/8.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-    </div>
+    </section>
+    <br>
+    <br>
     <div class="container">
         <div class="columns is-centered has-text-centered">
             <div class="column is-12">
@@ -566,34 +548,45 @@
             </div>
         </div>
     </div>
-    <div class="columns is-centered">
-        <div class="column is-5 has-text-centered">
-            <video id="dist1" controls muted autoplay loop width="100%">
-                <source src="media/video/11.mp4" 
-                type="video/mp4">
-            </video>
+    <br>
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/11.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/12.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/13.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/14.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/15.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item">
+                        <video poster="" autoplay muted loop height="100%">
+                            <source src="media/video/16.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="column is-5 has-text-centered">
-            <video id="dist2" controls muted autoplay loop width="100%">
-                <source src="media/video/12.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-    </div>
-    <div class="columns is-centered">
-        <div class="column is-5 has-text-centered">
-            <video id="dist1" controls muted autoplay loop width="100%">
-                <source src="media/video/15.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-        <div class="column is-5 has-text-centered">
-            <video id="dist2" controls muted autoplay loop width="100%">
-                <source src="media/video/16.mp4" 
-                type="video/mp4">
-            </video>
-        </div>
-    </div>
+    </section>
 </section>
 
 <script src="app.js"></script>
