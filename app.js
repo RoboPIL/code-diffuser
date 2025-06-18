@@ -292,8 +292,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    select.value = 'custom';
-    selectBattery.value = 'custom';
+    select.value = 'Hang the blue mug on the left branch';
+    selectBattery.value = 'I want to put a battery into the slot on the right column';
     input.disabled = false;
     inputBattery.disabled = false;
 });
@@ -496,5 +496,39 @@ function handleInstructionSelectBattery() {
         input.value = select.value;
         input.disabled = true;
         processInstructionBattery();
+    }
+}
+
+// Function to toggle intermediate results for mug scenario
+function toggleIntermediateResults() {
+    const content = document.getElementById('intermediate-content');
+    const icon = document.getElementById('toggle-icon');
+    const text = document.getElementById('toggle-text');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.className = 'fas fa-chevron-up';
+        text.textContent = 'Hide Details';
+    } else {
+        content.style.display = 'none';
+        icon.className = 'fas fa-chevron-down';
+        text.textContent = 'Show Details';
+    }
+}
+
+// Function to toggle intermediate results for battery scenario
+function toggleIntermediateResultsBattery() {
+    const content = document.getElementById('intermediate-content-battery');
+    const icon = document.getElementById('toggle-icon-battery');
+    const text = document.getElementById('toggle-text-battery');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.className = 'fas fa-chevron-up';
+        text.textContent = 'Hide Details';
+    } else {
+        content.style.display = 'none';
+        icon.className = 'fas fa-chevron-down';
+        text.textContent = 'Show Details';
     }
 } 

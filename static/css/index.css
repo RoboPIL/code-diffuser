@@ -2,6 +2,15 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
+/* Smooth scrolling for navigation links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure sections have proper spacing when navigated to */
+section[id] {
+  scroll-margin-top: 80px;
+}
 
 .footer .icon-link {
     font-size: 25px;
