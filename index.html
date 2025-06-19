@@ -221,9 +221,39 @@
         <div class="columns is-centered has-text-centered">
             <div class="column is-12">
                 <h2 class="title is-3">Interactive Visualization</h2>
-                <h2 class="title is-4">Scenario 1: Hanging Mug</h2>
             </div>
         </div>
+        
+        <!-- Task and Configuration Selection -->
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="box">
+                    <div class="columns">
+                        <div class="column is-6">
+                            <label class="label">Task Selection</label>
+                            <div class="select is-fullwidth">
+                                <select id="task-select" onchange="handleTaskSelect()">
+                                    <option value="hang_mug">Hanging Mug</option>
+                                    <option value="pack_battery">Packing Battery</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="column is-6">
+                            <label class="label">Initial Configuration</label>
+                            <div class="select is-fullwidth">
+                                <select id="config-select" onchange="handleConfigSelect()">
+                                    <option value="config_1">Configuration 1</option>
+                                    <option value="config_2">Configuration 2</option>
+                                    <option value="config_3">Configuration 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Visualization Area -->
         <div class="columns is-centered">
             <div class="column is-5">
                 <div style="text-align: left;">
@@ -271,7 +301,7 @@
                 </div>
                 <div class="columns is-multiline is-centered">
                     <figure class="image" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
-                        <img src="media/images/hang_mug.png" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+                        <img id="task-image" src="media/images/hang_mug/config_1.png" style="max-width: 90%; max-height: 90%; object-fit: contain;">
                     </figure>
                 </div>
             </div>
@@ -283,18 +313,7 @@
             </div>
         </div>
 
-        <!-- <div class="columns is-centered">
-        </div> -->
-
-        <!-- <div class="columns is-centered">
-            <div class="column is-8">
-                <div class="box">
-                    <h3 class="title is-5">3D Attention Map Visualization</h3>
-                    <div id="visualization" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;"></div>
-                </div>
-            </div>
-        </div> -->
-
+        <!-- Intermediate Results -->
         <div class="columns is-centered">
             <div class="column is-12">
                 <div class="box">
@@ -330,128 +349,6 @@
                                         <div class="column is-6">
                                             <p class="has-text-centered mb-2">Detection 2</p>
                                             <img id="detection-img-1" src="" alt="Detection 2" style="max-width: 100%; height: auto;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Second Scenario Section -->
-        <div class="columns is-centered has-text-centered" style="margin-top: 3rem;">
-            <div class="column is-12">
-                <h2 class="title is-4">Scenario 2: Packing Battery</h2>
-            </div>
-        </div>
-
-        <!-- First row: Image observation for Scenario 2 -->
-        <div class="columns is-centered">
-            <div class="column is-5">
-                <div style="text-align: left;">
-                    <p style="font-size: 0.875em; color: #666; margin-bottom: 0.5rem;">Select an example or enter custom instruction: (⏳ Waiting time up to one minute.)</p>
-                    <div class="field">
-                        <div class="control">
-                            <div class="select is-small is-fullwidth" style="font-size: 0.875rem;">
-                                <select id="instruction-select-battery" onchange="handleInstructionSelectBattery()">
-                                    <option value="I want to put a battery into the slot on the right column">I want to put a battery into the slot on the right column</option>
-                                    <option value="Put the battery to the slot furthest to it">Put the battery to the slot furthest to it</option>
-                                    <option value="custom">Custom instruction</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="field has-addons" style="position: relative;">
-                    <div class="control" style="display: flex; align-items: center;">
-                        <img src="media/images/user.png" alt="User" style="width: 32px; height: auto; margin-right: 0.5rem;">
-                    </div>
-                    <div class="control is-expanded">
-                        <input type="text" 
-                               id="instruction-battery" 
-                               class="input is-small" 
-                               style="font-size: 0.875rem;" 
-                               placeholder="I want to put a battery into the slot on the right column."
-                               autocomplete="off"
-                               spellcheck="false">
-                    </div>
-                    <div class="control">
-                        <button class="button is-primary is-small" 
-                                onclick="processInstructionBattery()" 
-                                style="font-size: 0.875rem; min-width: 70px;">
-                            <span>Enter</span>
-                        </button>
-                    </div>
-                    <div class="control" id="loading-battery" style="display: none; position: absolute; right: -30px; top: 50%; transform: translateY(-50%);">
-                        <span class="icon is-small">
-                            <i class="fas fa-circle-notch fa-spin"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="columns is-multiline is-centered">
-                    <figure class="image" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
-                        <img src="media/images/pack_battery.png" style="max-width: 90%; max-height: 90%; object-fit: contain;">
-                    </figure>
-                </div>
-            </div>
-
-            <div class="column is-7" style="margin-top: 0rem;">
-                <div class="box">
-                    <h3 class="title is-5">3D Attention Map Visualization</h3>
-                    <div id="visualization-battery" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Instruction inputs for Scenario 2 -->
-        <!-- <div class="columns is-centered">
-            <div class="column is-8">
-            </div>
-        </div> -->
-
-        <!-- Second row: 3D point cloud visualization for Scenario 2 -->
-        <!-- <div class="columns is-centered">
-        </div> -->
-
-        <!-- Third row: Intermediate results for Scenario 2 -->
-        <div class="columns is-centered">
-            <div class="column is-12">
-                <div class="box">
-                    <div class="level">
-                        <div class="level-left">
-                            <h3 class="title is-5">Intermediate Results</h3>
-                        </div>
-                        <div class="level-right">
-                            <button class="button is-small" onclick="toggleIntermediateResultsBattery()" id="toggle-btn-battery">
-                                <span class="icon is-small">
-                                    <i class="fas fa-chevron-down" id="toggle-icon-battery"></i>
-                                </span>
-                                <span id="toggle-text-battery">Show Details</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="intermediate-content-battery" style="display: none;">
-                        <div class="columns">
-                            <div class="column is-5">
-                                <h4 class="title is-6">Generated Code</h4>
-                                <pre id="generated-code-battery" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; max-height: 320px; overflow-y: auto;">
-                                    // Code will appear here
-                                </pre>
-                            </div>
-                            <div class="column is-7">
-                                <h4 class="title is-6">Object Detection</h4>
-                                <div id="detection-results-battery" style="background-color: #f5f5f5; padding: 1rem; border-radius: 4px; max-height: 320px; overflow-y: auto;">
-                                    <div class="columns is-multiline">
-                                        <div class="column is-6">
-                                            <p class="has-text-centered mb-2">Detection 1</p>
-                                            <img id="detection-img-0-battery" src="" alt="Detection 1" style="max-width: 100%; height: auto;">
-                                        </div>
-                                        <div class="column is-6">
-                                            <p class="has-text-centered mb-2">Detection 2</p>
-                                            <img id="detection-img-1-battery" src="" alt="Detection 2" style="max-width: 100%; height: auto;">
                                         </div>
                                     </div>
                                 </div>
