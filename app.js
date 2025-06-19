@@ -7,23 +7,63 @@ const taskConfigs = {
     hang_mug: {
         name: 'Hanging Mug',
         image: 'media/images/hang_mug.png',
-        instructions: [
-            'Hang the blue mug on the left branch',
-            'Hang the red mug on the branch furthest to it',
-            'Hang the red mug on one branch, sorry, the blue one.',
-            'I want to use the blue mug. Hang the red mug on one branch.'
-        ],
-        placeholder: 'Hang the blue mug on the left branch.',
+        configs: {
+            config_1: {
+                instructions: [
+                    'Hang the blue mug on the left branch',
+                    'Hang the red mug on the branch furthest to it',
+                    'Hang the red mug on one branch, sorry, the blue one.',
+                    'I want to use the blue mug. Hang the red mug on one branch.'
+                ],
+                placeholder: 'Hang the blue mug on the left branch.'
+            },
+            config_2: {
+                instructions: [
+                    'Hang the green mug on the left branch',
+                    'Hang the red mug on the branch furthest to it',
+                    'Hang the red mug on one branch, sorry, the green one.',
+                    'I want to use the green mug. Hang the red mug on one branch.'
+                ],
+                placeholder: 'Hang the green mug on the center branch.'
+            },
+            config_3: {
+                instructions: [
+                    'Hang the blue mug on the left branch',
+                    'Hang the red mug on the branch furthest to it',
+                    'Hang the red mug on one branch, sorry, the blue one.',
+                    'I want to use the blue mug. Hang the red mug on one branch.'
+                ],
+                placeholder: 'Hang the blue mug on the left branch.'
+            }
+        },
         backendEndpoint: '/generate'
     },
     pack_battery: {
         name: 'Packing Battery',
         image: 'media/images/pack_battery.png',
-        instructions: [
-            'I want to put a battery into the slot on the right column',
-            'Put the battery to the slot furthest to it'
-        ],
-        placeholder: 'I want to put a battery into the slot on the right column.',
+        configs: {
+            config_1: {
+                instructions: [
+                    'I want to put a battery into the slot on the right column',
+                    'Put the battery to the slot furthest to it'
+                ],
+                placeholder: 'I want to put a battery into the slot on the right column.'
+            },
+            config_2: {
+                instructions: [
+                    'I want to put a battery into the slot on the right column',
+                    'Put the battery to the slot furthest to it'
+                ],
+                placeholder: 'I want to put a battery into the slot on the right column.'
+            },
+            config_3: {
+                instructions: [
+                    'I want to put a battery into the slot on the right column',
+                    'Put the battery to the slot furthest to it'
+                ],
+                placeholder: 'I want to put a battery into the slot on the right column.'
+            }
+        },
         backendEndpoint: '/generate_battery'
     }
 };
@@ -109,7 +149,8 @@ function handleTaskSelect() {
     
     // Update instruction dropdown
     instructionSelect.innerHTML = '';
-    taskData.instructions.forEach(instruction => {
+    const configs = taskData.configs[currentConfig];
+    configs.instructions.forEach(instruction => {
         const option = document.createElement('option');
         option.value = instruction;
         option.textContent = instruction;
@@ -123,7 +164,7 @@ function handleTaskSelect() {
     instructionSelect.appendChild(customOption);
     
     // Update placeholder
-    instructionInput.placeholder = taskData.placeholder;
+    instructionInput.placeholder = configs.placeholder;
     
     // Reset to first configuration
     configSelect.value = 'config_1';
@@ -141,10 +182,34 @@ function handleTaskSelect() {
 function handleConfigSelect() {
     const configSelect = document.getElementById('config-select');
     const taskImage = document.getElementById('task-image');
+    const instructionSelect = document.getElementById('instruction-select');
+    const instructionInput = document.getElementById('instruction');
+    
     currentConfig = configSelect.value;
     
     // Update image to use task and config specific path
     taskImage.src = `media/images/${currentTask}/${currentConfig}.png`;
+    
+    // Update instruction dropdown based on current task and config
+    const taskData = taskConfigs[currentTask];
+    const configData = taskData.configs[currentConfig];
+    
+    instructionSelect.innerHTML = '';
+    configData.instructions.forEach(instruction => {
+        const option = document.createElement('option');
+        option.value = instruction;
+        option.textContent = instruction;
+        instructionSelect.appendChild(option);
+    });
+    
+    // Add custom option
+    const customOption = document.createElement('option');
+    customOption.value = 'custom';
+    customOption.textContent = 'Custom instruction';
+    instructionSelect.appendChild(customOption);
+    
+    // Update placeholder
+    instructionInput.placeholder = configData.placeholder;
     
     // Load intermediate results for selected configuration
     loadDefaultIntermediateResults();
