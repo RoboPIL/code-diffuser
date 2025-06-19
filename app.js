@@ -107,9 +107,6 @@ function handleTaskSelect() {
     currentTask = taskSelect.value;
     const taskData = taskConfigs[currentTask];
     
-    // Update image to use task and config specific path
-    taskImage.src = `media/images/${currentTask}/${currentConfig}.png`;
-    
     // Update instruction dropdown
     instructionSelect.innerHTML = '';
     taskData.instructions.forEach(instruction => {
@@ -132,6 +129,9 @@ function handleTaskSelect() {
     configSelect.value = 'config_1';
     currentConfig = 'config_1';
     
+    // Update image to use task and config specific path
+    taskImage.src = `media/images/${currentTask}/${currentConfig}.png`;
+
     // Load default intermediate results for new task
     loadDefaultIntermediateResults();
     loadDefaultPointCloud();
